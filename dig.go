@@ -355,6 +355,20 @@ func (c *Container) Provide(constructor interface{}, opts ...ProvideOption) erro
 	return nil
 }
 
+// TestAllConstructors will detect any missing dependency in the graph
+func (c *Container) TestAllConstructors() error {
+	if !c.isVerifiedValid {
+		c.eraseInvalidValues()
+	}
+	if !c.isVerifiedAcyclic {
+		if err := c.verifyAcyclic(); err != nil {
+			return err
+		}
+	}
+
+	return c.verifyNoMissingDependency()
+}
+
 // Invoke runs the given function after instantiating its dependencies.
 //
 // Any arguments that the function has are treated as its dependencies. The
@@ -411,6 +425,17 @@ func (c *Container) Invoke(function interface{}, opts ...InvokeOption) error {
 			return err
 		}
 	}
+	return nil
+}
+
+func (c *Container) verifyNoMissingDependency() error {
+	visited := make(map[key]struct{})
+	for _, n := range c.nodes {
+		if err := detectMissingDep(n, c, visited); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
