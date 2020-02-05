@@ -115,6 +115,7 @@ func detectMissingDep(n provider, c containerStore, visited map[key]struct{}) er
 				return false
 			}
 		}
+		visited[k] = struct{}{}
 
 		return true
 	}
