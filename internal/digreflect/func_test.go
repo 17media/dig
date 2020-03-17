@@ -111,7 +111,7 @@ func TestInspectFunc(t *testing.T) {
 			give:           assert.Contains,
 			wantName:       "Contains",
 			wantPackage:    "github.com/stretchr/testify/assert",
-			wantFileSuffix: "github.com/17media/dig/vendor/github.com/stretchr/testify/assert/assertions.go",
+			wantFileSuffix: "pkg/mod/github.com/stretchr/testify@v1.5.1/assert/assertions.go",
 		},
 	}
 
@@ -121,7 +121,7 @@ func TestInspectFunc(t *testing.T) {
 			assert.Equal(t, tt.wantName, f.Name, "function name did not match")
 			assert.Equal(t, tt.wantPackage, f.Package, "package name did not match")
 
-			assert.True(t, strings.HasSuffix(f.File, "src/"+tt.wantFileSuffix),
+			assert.True(t, strings.HasSuffix(f.File, tt.wantFileSuffix),
 				"file path %q does not end with src/%v", f.File, tt.wantFileSuffix)
 			assert.Contains(t, f.String(), tt.wantFileSuffix, "file path not in String output")
 		})
